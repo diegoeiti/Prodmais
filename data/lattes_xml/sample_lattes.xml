@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CURRICULO-VITAE NUMERO-IDENTIFICADOR="1234567890123456">
+    <DADOS-GERAIS NOME-COMPLETO="João Victor Alexandre Almeida" NOME-EM-CITACOES-BIBLIOGRAFICAS="ALMEIDA, J. V. A.">
+    </DADOS-GERAIS>
+    <PRODUCAO-BIBLIOGRAFICA>
+        <ARTIGOS-PUBLICADOS>
+            <ARTIGO-PUBLICADO>
+                <DADOS-BASICOS-DO-ARTIGO TITULO-DO-ARTIGO="Implementação da Ferramenta Prodmais na Universidade de Mogi das Cruzes" ANO-DO-ARTIGO="2024" DOI="10.1000/exemplo1"/>
+                <DETALHAMENTO-DO-ARTIGO TITULO-DO-PERIODICO-OU-REVISTA="Revista de Tecnologia Acadêmica"/>
+            </ARTIGO-PUBLICADO>
+            <ARTIGO-PUBLICADO>
+                <DADOS-BASICOS-DO-ARTIGO TITULO-DO-ARTIGO="Análise de Dados da Produção Científica com Elasticsearch" ANO-DO-ARTIGO="2023" DOI="10.1000/exemplo2"/>
+                <DETALHAMENTO-DO-ARTIGO TITULO-DO-PERIODICO-OU-REVISTA="Anais da Computação Aplicada"/>
+            </ARTIGO-PUBLICADO>
+        </ARTIGOS-PUBLICADOS>
+    </PRODUCAO-BIBLIOGRAFICA>
+</CURRICULO-VITAE>
