@@ -1,21 +1,19 @@
 <?php
 
-require_once 'c:/app3/Prodmais/vendor/autoload.php';
+require_once dirname(__DIR__) . '/src/LattesParser.php';
+require_once dirname(__DIR__) . '/src/JsonStorageService.php';
 
-use Prodmais\Elasticsearch\ElasticsearchService;
+use Prodmais\JsonStorageService;
 use Prodmais\Lattes\LattesParser;
 
-// Carrega a configuração
-$config = require __DIR__ . '/../config/config.php';
+// Caminho para o arquivo de banco de dados JSON
+$dbPath = dirname(__DIR__) . '/data/db.json';
+$lattesXmlPath = dirname(__DIR__) . '/data/lattes_xml';
 
-// Inicializa o serviço do Elasticsearch
-$esService = new ElasticsearchService($config['elasticsearch'], $config['app']['index_name']);
+// Inicializa o serviço de armazenamento
+$storageService = new JsonStorageService($dbPath);
 
-// Caminho para os arquivos XML do Lattes
-$lattesXmlPath = $config['data_paths']['lattes_xml'];
-
-// Lógica para ler e processar os arquivos
-echo "Iniciando processo de indexação...\n";
+echo "Iniciando processo de criação do banco de dados JSON...\n";
 
 $files = glob($lattesXmlPath . '/*.xml');
 
@@ -23,10 +21,6 @@ if (empty($files)) {
     echo "Nenhum arquivo XML encontrado em: {$lattesXmlPath}\n";
     exit;
 }
-
-// Recria o índice para garantir que está limpo
-echo "Recriando o índice '{$config['app']['index_name']}'...\n";
-$esService->recreateIndex();
 
 $lattesParser = new LattesParser();
 $allProductions = [];
@@ -42,10 +36,9 @@ foreach ($files as $file) {
 }
 
 if (!empty($allProductions)) {
-    echo "Indexando " . count($allProductions) . " produções no Elasticsearch...\n";
-    $esService->bulkIndex($allProductions);
-    echo "Indexação concluída com sucesso!\n";
+    echo "Salvando " . count($allProductions) . " produções no arquivo db.json...\n";
+    $storageService->recreateStorage($allProductions);
+    echo "Banco de dados JSON criado com sucesso!\n";
 } else {
-    echo "Nenhuma produção encontrada para indexar.\n";
+    echo "Nenhuma produção encontrada para salvar.\n";
 }
-
