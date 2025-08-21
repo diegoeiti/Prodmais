@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json().catch(() => null);
+                const errorMessage = errorData?.details || `HTTP error! status: ${response.status}`;
+                throw new Error(errorMessage);
             }
             const data = await response.json();
 

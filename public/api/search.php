@@ -9,12 +9,12 @@ use App\ElasticsearchService;
 $config = require dirname(__DIR__, 2) . '/config/config.php';
 
 // Sanitiza os inputs
-$q = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
+$program = filter_input(INPUT_GET, 'program', FILTER_SANITIZE_STRING);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
 $year = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 
 $filters = array_filter([
-    'q' => $q,
+    'program' => $program,
     'type' => $type,
     'year' => $year
 ]);
