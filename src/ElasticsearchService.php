@@ -1,28 +1,33 @@
 <?php
 
-namespace Prodmais\Elasticsearch;
+namespace App;
 
-use Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\ClientBuilder;
 
 class ElasticsearchService
 {
     private $client;
-    private $indexName;
 
-    public function __construct(array $config, string $indexName)
+    public function __construct(array $esConfig)
     {
-        $this->client = ClientBuilder::create()->setHosts($config['hosts'])->build();
-        $this->indexName = $indexName;
+        $this->client = ClientBuilder::create()->setHosts($esConfig['hosts'])->build();
     }
 
-    public function recreateIndex()
+    public function indexExists(string $indexName): bool
     {
-        if ($this->client->indices()->exists(['index' => $this->indexName])) {
-            $this->client->indices()->delete(['index' => $this->indexName]);
-        }
+        $response = $this->client->indices()->exists(['index' => $indexName]);
+        return $response->getStatusCode() === 200;
+    }
 
+    public function deleteIndex(string $indexName): void
+    {
+        $this->client->indices()->delete(['index' => $indexName]);
+    }
+
+    public function createIndex(string $indexName): void
+    {
         $this->client->indices()->create([
-            'index' => $this->indexName,
+            'index' => $indexName,
             'body' => [
                 'mappings' => [
                     'properties' => [
@@ -39,24 +44,26 @@ class ElasticsearchService
         ]);
     }
 
-    public function bulkIndex(array $documents)
+    public function bulkIndex(string $indexName, array $documents): void
     {
         $params = ['body' => []];
 
         foreach ($documents as $doc) {
             $params['body'][] = [
                 'index' => [
-                    '_index' => $this->indexName,
+                    '_index' => $indexName,
                     '_id'    => $doc['id']
                 ]
             ];
             $params['body'][] = $doc;
         }
 
-        $this->client->bulk($params);
+        if (!empty($params['body'])) {
+            $this->client->bulk($params);
+        }
     }
 
-    public function search(array $filters = [], int $size = 50)
+    public function search(string $indexName, array $filters = [], int $size = 50)
     {
         $query = [];
 
@@ -66,16 +73,25 @@ class ElasticsearchService
         if (!empty($filters['year'])) {
             $query[] = ['term' => ['year' => $filters['year']]];
         }
-        if (!empty($filters['program'])) { // Supondo que o nome do programa esteja no nome do pesquisador
+        if (!empty($filters['program'])) { 
             $query[] = ['match' => ['researcher_name' => $filters['program']]];
+        }
+        if (!empty($filters['q'])) {
+            $query[] = [
+                'multi_match' => [
+                    'query' => $filters['q'],
+                    'fields' => ['title', 'researcher_name']
+                ]
+            ];
         }
 
         $params = [
-            'index' => $this->indexName,
+            'index' => $indexName,
             'body'  => [
                 'size' => $size,
                 'sort' => [
-                    ['year' => ['order' => 'desc']]
+                    ['year' => ['order' => 'desc']],
+                    ['_score' => ['order' => 'desc']]
                 ],
                 'query' => [
                     'bool' => [

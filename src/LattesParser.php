@@ -1,6 +1,6 @@
 <?php
 
-namespace Prodmais\Lattes;
+namespace App;
 
 class LattesParser
 {

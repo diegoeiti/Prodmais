@@ -2,43 +2,31 @@
 
 header('Content-Type: application/json');
 
-require_once dirname(__DIR__, 2) . '/src/JsonStorageService.php';
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-use Prodmais\JsonStorageService;
+use App\ElasticsearchService;
 
-// Caminho para o arquivo de banco de dados JSON
-$dbPath = dirname(__DIR__, 2) . '/data/db.json';
+$config = require dirname(__DIR__, 2) . '/config/config.php';
 
 // Sanitiza os inputs
-$program = filter_input(INPUT_GET, 'program', FILTER_SANITIZE_STRING);
+$q = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
 $type = filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING);
 $year = filter_input(INPUT_GET, 'year', FILTER_VALIDATE_INT);
 
 $filters = array_filter([
-    // A filtragem de programa é um exemplo, precisaria de mais detalhes no XML
-    // 'researcher_name' => $program, 
+    'q' => $q,
     'type' => $type,
     'year' => $year
 ]);
 
 try {
-    $storageService = new JsonStorageService($dbPath);
-    $results = $storageService->search($filters);
-    
-    // A resposta precisa ter um formato similar ao do Elasticsearch para o frontend funcionar
-    $formattedResults = [
-        'hits' => [
-            'total' => ['value' => count($results)],
-            'hits' => array_map(function($item) {
-                return ['_source' => $item];
-            }, $results)
-        ]
-    ];
+    $esService = new ElasticsearchService($config['elasticsearch']);
+    $results = $esService->search($config['app']['index_name'], $filters);
 
-    echo json_encode($formattedResults);
+    echo json_encode($results);
 
 } catch (\Exception $e) {
     http_response_code(500);
     error_log($e->getMessage()); 
-    echo json_encode(['error' => 'Erro ao ler o banco de dados.']);
+    echo json_encode(['error' => 'Erro ao realizar a busca.', 'details' => $e->getMessage()]);
 }
