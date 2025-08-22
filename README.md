@@ -78,3 +78,43 @@ Exemplo de configuração para Apache (Virtual Host):
 **3. Acesse a Aplicação:**
 
 Após configurar o servidor, acesse a URL configurada (ex: `http://prodmais.local`) no seu navegador para ver o dashboard.
+
+---
+
+## Instalação e Execução (Ambiente UMC / XAMPP)
+
+Estas instruções são específicas para o ambiente da UMC, que utiliza XAMPP e pode não ter o `php.exe` no caminho padrão do sistema.
+
+**1. Verifique a Instalação do XAMPP:**
+
+Certifique-se de que o XAMPP está instalado. A principal dificuldade encontrada foi a ausência do `php.exe` no `PATH` do sistema ou até mesmo na pasta `C:\xampp\php`.
+
+**2. Encontrando o Executável do PHP:**
+
+Se o comando `php` não for reconhecido no terminal:
+- Procure por `php.exe` na pasta de instalação do XAMPP (geralmente `C:\xampp\php`).
+- Se `php.exe` não for encontrado, a instalação do XAMPP pode estar corrompida ou ser uma versão que não inclui o CLI (Command Line Interface) do PHP. Neste caso, a reinstalação do XAMPP é recomendada.
+
+**3. Executando o Servidor Web Embutido do PHP:**
+
+Para facilitar, você pode usar o servidor web que vem com o PHP, sem a necessidade de configurar o Apache.
+
+Abra um terminal (CMD ou PowerShell) na raiz do projeto (`C:\app3\Prodmais`) e execute o seguinte comando, substituindo `C:\caminho\para\seu\php.exe` pelo caminho completo que você encontrou:
+
+```bash
+# Exemplo de comando
+C:\xampp\php\php.exe -S localhost:8000 -t public
+```
+
+**4. Acesse a Aplicação:**
+
+Com o servidor em execução, abra seu navegador e acesse `http://localhost:8000`.
+Para a área administrativa, acesse `http://localhost:8000/admin.php`.
+
+**5. Executando a Indexação (Importante):**
+
+Para que os currículos apareçam na busca, você precisa executar o script de indexação. Use o mesmo caminho completo para o PHP:
+
+```bash
+C:\xampp\php\php.exe bin/indexer.php
+```
