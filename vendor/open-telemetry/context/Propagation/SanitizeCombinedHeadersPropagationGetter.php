@@ -12,23 +12,24 @@ use function preg_replace;
  * handle edge cases where the header has a trailing ';' or an empty trace state.
  * We also need to trim trailing separators from the header, found when a header is empty.
  */
-final class SanitizeCombinedHeadersPropagationGetter implements ExtendedPropagationGetterInterface
+final class SanitizeCombinedHeadersPropagationGetter implements PropagationGetterInterface
 {
     private const LIST_MEMBERS_SEPARATOR = ',';
     private const SERVER_CONCAT_HEADERS_REGEX = '/;(?=[^,=;]*=|$)/';
     private const TRAILING_LEADING_SEPARATOR_REGEX = '/^' . self::LIST_MEMBERS_SEPARATOR . '+|' . self::LIST_MEMBERS_SEPARATOR . '+$/';
 
-    public function __construct(private readonly PropagationGetterInterface $getter)
+    private PropagationGetterInterface $getter;
+
+    public function __construct(PropagationGetterInterface $getter)
     {
+        $this->getter = $getter;
     }
 
-    #[\Override]
     public function keys($carrier): array
     {
         return $this->getter->keys($carrier);
     }
 
-    #[\Override]
     public function get($carrier, string $key): ?string
     {
         $value = $this->getter->get($carrier, $key);
@@ -41,28 +42,5 @@ final class SanitizeCombinedHeadersPropagationGetter implements ExtendedPropagat
             [self::LIST_MEMBERS_SEPARATOR],
             $value,
         );
-    }
-
-    /**
-     * @psalm-suppress PossiblyNullArgument
-     */
-    #[\Override]
-    public function getAll($carrier, string $key): array
-    {
-        $value = $this->getter instanceof ExtendedPropagationGetterInterface
-            ? $this->getter->getAll($carrier, $key)
-            : (array) $this->getter->get($carrier, $key);
-
-        if ($value === []) {
-            return [];
-        }
-
-        $value = preg_replace(
-            [self::SERVER_CONCAT_HEADERS_REGEX, self::TRAILING_LEADING_SEPARATOR_REGEX],
-            [self::LIST_MEMBERS_SEPARATOR],
-            $value,
-        );
-
-        return array_values($value);
     }
 }

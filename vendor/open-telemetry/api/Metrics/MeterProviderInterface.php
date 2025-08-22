@@ -6,6 +6,7 @@ namespace OpenTelemetry\API\Metrics;
 
 interface MeterProviderInterface
 {
+
     /**
      * Returns a `Meter` for the given instrumentation scope.
      *
@@ -22,6 +23,6 @@ interface MeterProviderInterface
         string $name,
         ?string $version = null,
         ?string $schemaUrl = null,
-        iterable $attributes = [],
+        iterable $attributes = []
     ): MeterInterface;
 }

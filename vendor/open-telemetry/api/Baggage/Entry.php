@@ -6,13 +6,27 @@ namespace OpenTelemetry\API\Baggage;
 
 final class Entry
 {
+    /** @var mixed */
+    private $value;
+
+    private MetadataInterface $metadata;
+
+    /**
+     * @param mixed $value
+     * @param MetadataInterface $metadata
+     */
     public function __construct(
-        private readonly mixed $value,
-        private readonly MetadataInterface $metadata,
+        $value,
+        MetadataInterface $metadata
     ) {
+        $this->value = $value;
+        $this->metadata = $metadata;
     }
 
-    public function getValue(): mixed
+    /**
+     * @return mixed
+     */
+    public function getValue()
     {
         return $this->value;
     }

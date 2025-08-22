@@ -6,7 +6,6 @@ namespace OpenTelemetry\API\Metrics\Noop;
 
 use OpenTelemetry\API\Metrics\AsynchronousInstrument;
 use OpenTelemetry\API\Metrics\CounterInterface;
-use OpenTelemetry\API\Metrics\GaugeInterface;
 use OpenTelemetry\API\Metrics\HistogramInterface;
 use OpenTelemetry\API\Metrics\MeterInterface;
 use OpenTelemetry\API\Metrics\ObservableCallbackInterface;
@@ -35,11 +34,6 @@ final class NoopMeter implements MeterInterface
     public function createHistogram(string $name, ?string $unit = null, ?string $description = null, array $advisory = []): HistogramInterface
     {
         return new NoopHistogram();
-    }
-
-    public function createGauge(string $name, ?string $unit = null, ?string $description = null, array $advisory = []): GaugeInterface
-    {
-        return new NoopGauge();
     }
 
     public function createObservableGauge(string $name, ?string $unit = null, ?string $description = null, $advisory = [], callable ...$callbacks): ObservableGaugeInterface

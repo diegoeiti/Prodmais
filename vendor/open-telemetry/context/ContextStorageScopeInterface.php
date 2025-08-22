@@ -6,9 +6,6 @@ namespace OpenTelemetry\Context;
 
 use ArrayAccess;
 
-/**
- * @psalm-suppress MissingTemplateParam
- */
 interface ContextStorageScopeInterface extends ScopeInterface, ArrayAccess
 {
     /**
@@ -21,6 +18,5 @@ interface ContextStorageScopeInterface extends ScopeInterface, ArrayAccess
     /**
      * @param string $offset
      */
-    #[\Override]
     public function offsetSet($offset, $value): void;
 }

@@ -6,10 +6,9 @@ namespace OpenTelemetry\API;
 
 use function assert;
 use Closure;
-use OpenTelemetry\API\Behavior\LogsMessagesTrait;
+use const E_USER_WARNING;
 use OpenTelemetry\API\Instrumentation\Configurator;
 use OpenTelemetry\API\Instrumentation\ContextKeys;
-use OpenTelemetry\API\Logs\EventLoggerProviderInterface;
 use OpenTelemetry\API\Logs\LoggerProviderInterface;
 use OpenTelemetry\API\Metrics\MeterProviderInterface;
 use OpenTelemetry\API\Trace\TracerProviderInterface;
@@ -17,25 +16,32 @@ use OpenTelemetry\Context\Context;
 use OpenTelemetry\Context\Propagation\TextMapPropagatorInterface;
 use function sprintf;
 use Throwable;
+use function trigger_error;
 
 /**
  * Provides access to the globally configured instrumentation instances.
  */
 final class Globals
 {
-    use LogsMessagesTrait;
-
     /** @var Closure[] */
     private static array $initializers = [];
     private static ?self $globals = null;
 
+    private TracerProviderInterface $tracerProvider;
+    private MeterProviderInterface $meterProvider;
+    private TextMapPropagatorInterface $propagator;
+    private LoggerProviderInterface $loggerProvider;
+
     public function __construct(
-        private readonly TracerProviderInterface $tracerProvider,
-        private readonly MeterProviderInterface $meterProvider,
-        private readonly LoggerProviderInterface $loggerProvider,
-        private readonly EventLoggerProviderInterface $eventLoggerProvider,
-        private readonly TextMapPropagatorInterface $propagator,
+        TracerProviderInterface $tracerProvider,
+        MeterProviderInterface $meterProvider,
+        LoggerProviderInterface $loggerProvider,
+        TextMapPropagatorInterface $propagator
     ) {
+        $this->tracerProvider = $tracerProvider;
+        $this->meterProvider = $meterProvider;
+        $this->loggerProvider = $loggerProvider;
+        $this->propagator = $propagator;
     }
 
     public static function tracerProvider(): TracerProviderInterface
@@ -59,20 +65,10 @@ final class Globals
     }
 
     /**
-     * @deprecated
-     * @phan-suppress PhanDeprecatedFunction
-     */
-    public static function eventLoggerProvider(): EventLoggerProviderInterface
-    {
-        return Context::getCurrent()->get(ContextKeys::eventLoggerProvider()) ?? self::globals()->eventLoggerProvider;
-    }
-
-    /**
      * @param Closure(Configurator): Configurator $initializer
      *
      * @internal
      * @psalm-internal OpenTelemetry
-     * @todo In a future (breaking) change, we can remove `Registry` and globals initializers, in favor of SPI.
      */
     public static function registerInitializer(Closure $initializer): void
     {
@@ -80,7 +76,7 @@ final class Globals
     }
 
     /**
-     * @phan-suppress PhanTypeMismatchReturnNullable,PhanDeprecatedFunction
+     * @phan-suppress PhanTypeMismatchReturnNullable
      */
     private static function globals(): self
     {
@@ -96,7 +92,7 @@ final class Globals
                 try {
                     $configurator = $initializer($configurator);
                 } catch (Throwable $e) {
-                    self::logWarning(sprintf("Error during opentelemetry initialization: %s\n%s", $e->getMessage(), $e->getTraceAsString()));
+                    trigger_error(sprintf("Error during opentelemetry initialization: %s\n%s", $e->getMessage(), $e->getTraceAsString()), E_USER_WARNING);
                 }
             }
         } finally {
@@ -108,11 +104,10 @@ final class Globals
         $meterProvider = $context->get(ContextKeys::meterProvider());
         $propagator = $context->get(ContextKeys::propagator());
         $loggerProvider = $context->get(ContextKeys::loggerProvider());
-        $eventLoggerProvider = $context->get(ContextKeys::eventLoggerProvider());
 
-        assert(isset($tracerProvider, $meterProvider, $loggerProvider, $eventLoggerProvider, $propagator));
+        assert(isset($tracerProvider, $meterProvider, $loggerProvider, $propagator));
 
-        return self::$globals = new self($tracerProvider, $meterProvider, $loggerProvider, $eventLoggerProvider, $propagator);
+        return self::$globals = new self($tracerProvider, $meterProvider, $loggerProvider, $propagator);
     }
 
     /**

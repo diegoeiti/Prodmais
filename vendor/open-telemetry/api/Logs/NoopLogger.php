@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenTelemetry\API\Logs;
 
-use OpenTelemetry\Context\ContextInterface;
 use Psr\Log\LoggerTrait;
 
 class NoopLogger implements LoggerInterface
@@ -30,10 +29,5 @@ class NoopLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = []): void
     {
-    }
-
-    public function isEnabled(?ContextInterface $context = null, ?int $severityNumber = null, ?string $eventName = null): bool
-    {
-        return false;
     }
 }

@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace OpenTelemetry\API\Instrumentation;
 
+use ArrayAccess;
+use function assert;
+use function class_exists;
 use OpenTelemetry\API\Globals;
-use OpenTelemetry\API\Logs\EventLoggerInterface;
-use OpenTelemetry\API\Logs\EventLoggerProviderInterface;
 use OpenTelemetry\API\Logs\LoggerInterface;
 use OpenTelemetry\API\Logs\LoggerProviderInterface;
 use OpenTelemetry\API\Metrics\MeterInterface;
 use OpenTelemetry\API\Metrics\MeterProviderInterface;
 use OpenTelemetry\API\Trace\TracerInterface;
 use OpenTelemetry\API\Trace\TracerProviderInterface;
-use WeakMap;
+use const PHP_VERSION_ID;
 
 /**
  * Provides access to cached {@link TracerInterface} and {@link MeterInterface}
@@ -25,33 +26,50 @@ use WeakMap;
  */
 final class CachedInstrumentation
 {
-    /** @var WeakMap<TracerProviderInterface, TracerInterface> */
-    private WeakMap $tracers;
-    /** @var WeakMap<MeterProviderInterface, MeterInterface> */
-    private WeakMap $meters;
-    /** @var WeakMap<LoggerProviderInterface, LoggerInterface> */
-    private WeakMap $loggers;
-    /** @var WeakMap<EventLoggerProviderInterface, EventLoggerInterface> */
-    private WeakMap $eventLoggers;
+    private string $name;
+    private ?string $version;
+    private ?string $schemaUrl;
+    private iterable $attributes;
+    /** @var ArrayAccess<TracerProviderInterface, TracerInterface>|null */
+    private ?ArrayAccess $tracers;
+    /** @var ArrayAccess<MeterProviderInterface, MeterInterface>|null */
+    private ?ArrayAccess $meters;
+    /** @var ArrayAccess<LoggerProviderInterface, LoggerInterface>|null */
+    private ?ArrayAccess $loggers;
 
-    /**
-     * @psalm-suppress PropertyTypeCoercion
-     */
-    public function __construct(
-        private readonly string $name,
-        private readonly ?string $version = null,
-        private readonly ?string $schemaUrl = null,
-        private readonly iterable $attributes = [],
-    ) {
-        $this->tracers = new \WeakMap();
-        $this->meters = new \WeakMap();
-        $this->loggers = new \WeakMap();
-        $this->eventLoggers = new \WeakMap();
+    public function __construct(string $name, ?string $version = null, ?string $schemaUrl = null, iterable $attributes = [])
+    {
+        $this->name = $name;
+        $this->version = $version;
+        $this->schemaUrl = $schemaUrl;
+        $this->attributes = $attributes;
+        $this->tracers = self::createWeakMap();
+        $this->meters = self::createWeakMap();
+        $this->loggers = self::createWeakMap();
+    }
+
+    private static function createWeakMap(): ?ArrayAccess
+    {
+        if (PHP_VERSION_ID < 80000) {
+            return null;
+        }
+
+        /** @phan-suppress-next-line PhanUndeclaredClassReference */
+        assert(class_exists(\WeakMap::class, false));
+        /** @phan-suppress-next-line PhanUndeclaredClassMethod */
+        $map = new \WeakMap();
+        assert($map instanceof ArrayAccess);
+
+        return $map;
     }
 
     public function tracer(): TracerInterface
     {
         $tracerProvider = Globals::tracerProvider();
+
+        if ($this->tracers === null) {
+            return $tracerProvider->getTracer($this->name, $this->version, $this->schemaUrl, $this->attributes);
+        }
 
         return $this->tracers[$tracerProvider] ??= $tracerProvider->getTracer($this->name, $this->version, $this->schemaUrl, $this->attributes);
     }
@@ -60,23 +78,20 @@ final class CachedInstrumentation
     {
         $meterProvider = Globals::meterProvider();
 
+        if ($this->meters === null) {
+            return $meterProvider->getMeter($this->name, $this->version, $this->schemaUrl, $this->attributes);
+        }
+
         return $this->meters[$meterProvider] ??= $meterProvider->getMeter($this->name, $this->version, $this->schemaUrl, $this->attributes);
     }
     public function logger(): LoggerInterface
     {
         $loggerProvider = Globals::loggerProvider();
 
+        if ($this->loggers === null) {
+            return $loggerProvider->getLogger($this->name, $this->version, $this->schemaUrl, $this->attributes);
+        }
+
         return $this->loggers[$loggerProvider] ??= $loggerProvider->getLogger($this->name, $this->version, $this->schemaUrl, $this->attributes);
-    }
-
-    /**
-     * @deprecated
-     * @phan-suppress PhanDeprecatedFunction
-     */
-    public function eventLogger(): EventLoggerInterface
-    {
-        $eventLoggerProvider = Globals::eventLoggerProvider();
-
-        return $this->eventLoggers[$eventLoggerProvider] ??= $eventLoggerProvider->getEventLogger($this->name, $this->version, $this->schemaUrl, $this->attributes);
     }
 }

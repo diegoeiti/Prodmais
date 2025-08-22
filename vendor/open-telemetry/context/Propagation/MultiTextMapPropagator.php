@@ -13,36 +13,44 @@ use OpenTelemetry\Context\ContextInterface;
 
 final class MultiTextMapPropagator implements TextMapPropagatorInterface
 {
-    /** @var list<string> */
-    private readonly array $fields;
+    /**
+     * @readonly
+     *
+     * @var list<TextMapPropagatorInterface>
+     */
+    private array $propagators = [];
+
+    /**
+     * @readonly
+     *
+     * @var list<string>
+     */
+    private array $fields;
 
     /**
      * @no-named-arguments
      *
      * @param list<TextMapPropagatorInterface> $propagators
      */
-    public function __construct(
-        private readonly array $propagators,
-    ) {
-        $this->fields = $this->extractFields($this->propagators);
+    public function __construct(array $propagators)
+    {
+        $this->propagators = $propagators;
+        $this->fields = $this->extractFields($propagators);
     }
 
-    #[\Override]
     public function fields(): array
     {
         return $this->fields;
     }
 
-    #[\Override]
-    public function inject(&$carrier, ?PropagationSetterInterface $setter = null, ?ContextInterface $context = null): void
+    public function inject(&$carrier, PropagationSetterInterface $setter = null, ContextInterface $context = null): void
     {
         foreach ($this->propagators as $propagator) {
             $propagator->inject($carrier, $setter, $context);
         }
     }
 
-    #[\Override]
-    public function extract($carrier, ?PropagationGetterInterface $getter = null, ?ContextInterface $context = null): ContextInterface
+    public function extract($carrier, PropagationGetterInterface $getter = null, ContextInterface $context = null): ContextInterface
     {
         $context ??= Context::getCurrent();
 

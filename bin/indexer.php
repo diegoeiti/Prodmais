@@ -44,8 +44,21 @@ foreach ($files as $file) {
 
 if (!empty($allProductions)) {
     echo "Indexando " . count($allProductions) . " produções no Elasticsearch...\n";
-    $esService->bulkIndex($indexName, $allProductions);
-    echo "Indexação concluída com sucesso!\n";
+    $response = $esService->bulkIndex($indexName, $allProductions);
+
+    if ($response['errors']) {
+        echo "Indexação encontrou erros!\n";
+        foreach ($response['items'] as $item) {
+            if (isset($item['index']['error'])) {
+                echo "  - Erro: " . $item['index']['error']['type'] . "\n";
+                echo "    Razão: " . $item['index']['error']['reason'] . "\n";
+            }
+        }
+    } else {
+        echo "Indexação concluída com sucesso!\n";
+        echo "Forçando a atualização do índice...\n";
+        $esService->refreshIndex($indexName);
+    }
 } else {
     echo "Nenhuma produção encontrada para indexar.\n";
 }

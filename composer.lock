@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a24a1b957db8598ce57a8a0d4773b229",
+    "content-hash": "ac08fc3c61510913994fb70c74cdc950",
     "packages": [
         {
             "name": "elastic/transport",
@@ -448,36 +448,33 @@
         },
         {
             "name": "open-telemetry/api",
-            "version": "1.4.0",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "b3a9286f9c1c8247c83493c5b1fa475cd0cec7f7"
+                "reference": "87de95d926f46262885d0d390060c095af13e2e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/b3a9286f9c1c8247c83493c5b1fa475cd0cec7f7",
-                "reference": "b3a9286f9c1c8247c83493c5b1fa475cd0cec7f7",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/87de95d926f46262885d0d390060c095af13e2e5",
+                "reference": "87de95d926f46262885d0d390060c095af13e2e5",
                 "shasum": ""
             },
             "require": {
                 "open-telemetry/context": "^1.0",
-                "php": "^8.1",
+                "php": "^7.4 || ^8.0",
                 "psr/log": "^1.1|^2.0|^3.0",
+                "symfony/polyfill-php80": "^1.26",
+                "symfony/polyfill-php81": "^1.26",
                 "symfony/polyfill-php82": "^1.26"
             },
             "conflict": {
-                "open-telemetry/sdk": "<=1.0.8"
+                "open-telemetry/sdk": "<=1.0.4"
             },
             "type": "library",
             "extra": {
-                "spi": {
-                    "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
-                        "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
-                    ]
-                },
                 "branch-alias": {
-                    "dev-main": "1.4.x-dev"
+                    "dev-main": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -514,24 +511,26 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-06-19T23:36:51+00:00"
+            "time": "2024-02-06T01:32:25+00:00"
         },
         {
             "name": "open-telemetry/context",
-            "version": "1.3.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/context.git",
-                "reference": "438f71812242db3f196fb4c717c6f92cbc819be6"
+                "reference": "e9d254a7c89885e63fd2fde54e31e81aaaf52b7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/438f71812242db3f196fb4c717c6f92cbc819be6",
-                "reference": "438f71812242db3f196fb4c717c6f92cbc819be6",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/e9d254a7c89885e63fd2fde54e31e81aaaf52b7c",
+                "reference": "e9d254a7c89885e63fd2fde54e31e81aaaf52b7c",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1",
+                "php": "^7.4 || ^8.0",
+                "symfony/polyfill-php80": "^1.26",
+                "symfony/polyfill-php81": "^1.26",
                 "symfony/polyfill-php82": "^1.26"
             },
             "suggest": {
@@ -573,7 +572,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-08-13T01:12:00+00:00"
+            "time": "2024-01-13T05:50:44+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -1018,21 +1017,72 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
-            "name": "symfony/deprecation-contracts",
-            "version": "v3.6.0",
+            "name": "smalot/pdfparser",
+            "version": "v2.12.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
+                "url": "https://github.com/smalot/pdfparser.git",
+                "reference": "98d31ba34ef5b5a98897ef4b6c3925d502ea53b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/63afe740e99a13ba87ec199bb07bbdee937a5b62",
-                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62",
+                "url": "https://api.github.com/repos/smalot/pdfparser/zipball/98d31ba34ef5b5a98897ef4b6c3925d502ea53b1",
+                "reference": "98d31ba34ef5b5a98897ef4b6c3925d502ea53b1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1"
+                "ext-iconv": "*",
+                "ext-zlib": "*",
+                "php": ">=7.1",
+                "symfony/polyfill-mbstring": "^1.18"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Smalot\\PdfParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastien MALOT",
+                    "email": "sebastien@malot.fr"
+                }
+            ],
+            "description": "Pdf parser library. Can read and extract information from pdf file.",
+            "homepage": "https://www.pdfparser.org",
+            "keywords": [
+                "extract",
+                "parse",
+                "parser",
+                "pdf",
+                "text"
+            ],
+            "support": {
+                "issues": "https://github.com/smalot/pdfparser/issues",
+                "source": "https://github.com/smalot/pdfparser/tree/v2.12.1"
+            },
+            "time": "2025-07-31T06:19:56+00:00"
+        },
+        {
+            "name": "symfony/deprecation-contracts",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "26954b3d62a6c5fd0ea8a2a00c0353a14978d05c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/26954b3d62a6c5fd0ea8a2a00c0353a14978d05c",
+                "reference": "26954b3d62a6c5fd0ea8a2a00c0353a14978d05c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.2"
             },
             "type": "library",
             "extra": {
@@ -1041,7 +1091,7 @@
                     "name": "symfony/contracts"
                 },
                 "branch-alias": {
-                    "dev-main": "3.6-dev"
+                    "dev-main": "3.0-dev"
                 }
             },
             "autoload": {
@@ -1066,7 +1116,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.6.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.0.2"
             },
             "funding": [
                 {
@@ -1082,7 +1132,256 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-25T14:21:43+00:00"
+            "time": "2022-01-02T09:55:41+00:00"
+        },
+        {
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.33.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
+                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "php": ">=7.2"
+            },
+            "provide": {
+                "ext-mbstring": "*"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.33.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-12-23T08:48:59+00:00"
+        },
+        {
+            "name": "symfony/polyfill-php80",
+            "version": "v1.33.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php80.git",
+                "reference": "0cc9dd0f17f61d8131e7df6b84bd344899fe2608"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/0cc9dd0f17f61d8131e7df6b84bd344899fe2608",
+                "reference": "0cc9dd0f17f61d8131e7df6b84bd344899fe2608",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php80\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ion Bazan",
+                    "email": "ion.bazan@gmail.com"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.33.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-01-02T08:10:11+00:00"
+        },
+        {
+            "name": "symfony/polyfill-php81",
+            "version": "v1.33.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php81.git",
+                "reference": "4a4cfc2d253c21a5ad0e53071df248ed48c6ce5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php81/zipball/4a4cfc2d253c21a5ad0e53071df248ed48c6ce5c",
+                "reference": "4a4cfc2d253c21a5ad0e53071df248ed48c6ce5c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php81\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.1+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php81/tree/v1.33.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-09T11:45:10+00:00"
         },
         {
             "name": "symfony/polyfill-php82",

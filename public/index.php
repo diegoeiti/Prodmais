@@ -6,11 +6,13 @@
     <title>Prodmais - Dashboard de Produção Científica</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Prodmais - UMC</a>
+            <a href="admin.php" class="btn btn-sm btn-outline-light">Área Administrativa</a>
         </div>
     </nav>
 

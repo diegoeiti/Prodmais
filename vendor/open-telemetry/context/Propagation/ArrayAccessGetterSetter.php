@@ -6,8 +6,11 @@ namespace OpenTelemetry\Context\Propagation;
 
 use function array_key_first;
 use ArrayAccess;
+use function get_class;
+use function gettype;
 use InvalidArgumentException;
 use function is_array;
+use function is_object;
 use function is_string;
 use function sprintf;
 use function strcasecmp;
@@ -16,10 +19,10 @@ use Traversable;
 /**
  * @see https://github.com/open-telemetry/opentelemetry-specification/blob/v1.6.1/specification/context/api-propagators.md#textmap-propagator Getter and Setter.
  *
- * Default implementation of {@see ExtendedPropagationGetterInterface} and {@see PropagationSetterInterface}.
+ * Default implementation of {@see PropagationGetterInterface} and {@see PropagationSetterInterface}.
  * This type is used if no custom getter/setter is provided to {@see TextMapPropagatorInterface::inject()} or {@see TextMapPropagatorInterface::extract()}.
  */
-final class ArrayAccessGetterSetter implements ExtendedPropagationGetterInterface, PropagationSetterInterface
+final class ArrayAccessGetterSetter implements PropagationGetterInterface, PropagationSetterInterface
 {
     private static ?self $instance = null;
 
@@ -36,7 +39,6 @@ final class ArrayAccessGetterSetter implements ExtendedPropagationGetterInterfac
     }
 
     /** {@inheritdoc} */
-    #[\Override]
     public function keys($carrier): array
     {
         if ($this->isSupportedCarrier($carrier)) {
@@ -51,13 +53,12 @@ final class ArrayAccessGetterSetter implements ExtendedPropagationGetterInterfac
         throw new InvalidArgumentException(
             sprintf(
                 'Unsupported carrier type: %s.',
-                get_debug_type($carrier),
+                is_object($carrier) ? get_class($carrier) : gettype($carrier),
             )
         );
     }
 
     /** {@inheritdoc} */
-    #[\Override]
     public function get($carrier, string $key): ?string
     {
         if ($this->isSupportedCarrier($carrier)) {
@@ -74,38 +75,13 @@ final class ArrayAccessGetterSetter implements ExtendedPropagationGetterInterfac
         throw new InvalidArgumentException(
             sprintf(
                 'Unsupported carrier type: %s. Unable to get value associated with key:%s',
-                get_debug_type($carrier),
+                is_object($carrier) ? get_class($carrier) : gettype($carrier),
                 $key
             )
         );
     }
 
     /** {@inheritdoc} */
-    #[\Override]
-    public function getAll($carrier, string $key): array
-    {
-        if ($this->isSupportedCarrier($carrier)) {
-            $value = $carrier[$this->resolveKey($carrier, $key)] ?? null;
-            if (is_array($value) && $value) {
-                return array_values(array_filter($value, 'is_string'));
-            }
-
-            return is_string($value)
-                ? [$value]
-                : [];
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                'Unsupported carrier type: %s. Unable to get value associated with key:%s',
-                get_debug_type($carrier),
-                $key
-            )
-        );
-    }
-
-    /** {@inheritdoc} */
-    #[\Override]
     public function set(&$carrier, string $key, string $value): void
     {
         if ($key === '') {
@@ -124,7 +100,7 @@ final class ArrayAccessGetterSetter implements ExtendedPropagationGetterInterfac
         throw new InvalidArgumentException(
             sprintf(
                 'Unsupported carrier type: %s. Unable to set value associated with key:%s',
-                get_debug_type($carrier),
+                is_object($carrier) ? get_class($carrier) : gettype($carrier),
                 $key
             )
         );

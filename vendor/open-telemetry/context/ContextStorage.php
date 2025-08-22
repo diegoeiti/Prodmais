@@ -7,9 +7,9 @@ namespace OpenTelemetry\Context;
 /**
  * @internal
  */
-final class ContextStorage implements ContextStorageInterface, ContextStorageHeadAware, ExecutionContextAwareInterface
+final class ContextStorage implements ContextStorageInterface, ExecutionContextAwareInterface
 {
-    private ContextStorageHead $current;
+    public ContextStorageHead $current;
     private ContextStorageHead $main;
     /** @var array<int|string, ContextStorageHead> */
     private array $forks = [];
@@ -19,31 +19,21 @@ final class ContextStorage implements ContextStorageInterface, ContextStorageHea
         $this->current = $this->main = new ContextStorageHead($this);
     }
 
-    #[\Override]
-    public function fork(int|string $id): void
+    public function fork($id): void
     {
         $this->forks[$id] = clone $this->current;
     }
 
-    #[\Override]
-    public function switch(int|string $id): void
+    public function switch($id): void
     {
         $this->current = $this->forks[$id] ?? $this->main;
     }
 
-    #[\Override]
-    public function destroy(int|string $id): void
+    public function destroy($id): void
     {
         unset($this->forks[$id]);
     }
 
-    #[\Override]
-    public function head(): ContextStorageHead
-    {
-        return $this->current;
-    }
-
-    #[\Override]
     public function scope(): ?ContextStorageScopeInterface
     {
         return ($this->current->node->head ?? null) === $this->current
@@ -51,13 +41,11 @@ final class ContextStorage implements ContextStorageInterface, ContextStorageHea
             : null;
     }
 
-    #[\Override]
     public function current(): ContextInterface
     {
         return $this->current->node->context ?? Context::getRoot();
     }
 
-    #[\Override]
     public function attach(ContextInterface $context): ContextStorageScopeInterface
     {
         return $this->current->node = new ContextStorageNode($context, $this->current, $this->current->node);

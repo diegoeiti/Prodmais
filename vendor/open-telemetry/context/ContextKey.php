@@ -6,12 +6,14 @@ namespace OpenTelemetry\Context;
 
 /**
  * @internal
- * @psalm-suppress MissingTemplateParam
  */
 final class ContextKey implements ContextKeyInterface
 {
-    public function __construct(private readonly ?string $name = null)
+    private ?string $name;
+
+    public function __construct(?string $name=null)
     {
+        $this->name = $name;
     }
 
     public function name(): ?string

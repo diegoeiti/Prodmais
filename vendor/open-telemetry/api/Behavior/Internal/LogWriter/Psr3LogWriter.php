@@ -8,8 +8,11 @@ use Psr\Log\LoggerInterface;
 
 class Psr3LogWriter implements LogWriterInterface
 {
-    public function __construct(private readonly LoggerInterface $logger)
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
     {
+        $this->logger = $logger;
     }
 
     public function write($level, string $message, array $context): void

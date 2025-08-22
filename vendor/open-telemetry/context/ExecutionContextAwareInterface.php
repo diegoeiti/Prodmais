@@ -6,9 +6,18 @@ namespace OpenTelemetry\Context;
 
 interface ExecutionContextAwareInterface
 {
-    public function fork(int|string $id): void;
+    /**
+     * @param int|string $id
+     */
+    public function fork($id): void;
 
-    public function switch(int|string $id): void;
+    /**
+     * @param int|string $id
+     */
+    public function switch($id): void;
 
-    public function destroy(int|string $id): void;
+    /**
+     * @param int|string $id
+     */
+    public function destroy($id): void;
 }

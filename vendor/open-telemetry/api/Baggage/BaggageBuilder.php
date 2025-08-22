@@ -6,9 +6,13 @@ namespace OpenTelemetry\API\Baggage;
 
 final class BaggageBuilder implements BaggageBuilderInterface
 {
+    /** @var array<string, Entry> */
+    private array $entries;
+
     /** @param array<string, Entry> $entries */
-    public function __construct(private array $entries = [])
+    public function __construct(array $entries = [])
     {
+        $this->entries = $entries;
     }
 
     /** @inheritDoc */
@@ -20,11 +24,8 @@ final class BaggageBuilder implements BaggageBuilderInterface
     }
 
     /** @inheritDoc */
-    public function set(string $key, $value, ?MetadataInterface $metadata = null): BaggageBuilderInterface
+    public function set(string $key, $value, MetadataInterface $metadata = null): BaggageBuilderInterface
     {
-        if ($key === '') {
-            return $this;
-        }
         $metadata ??= Metadata::getEmpty();
 
         $this->entries[$key] = new Entry($value, $metadata);

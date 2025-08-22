@@ -10,7 +10,10 @@ class ElasticsearchService
 
     public function __construct(array $esConfig)
     {
-        $this->client = ClientBuilder::create()->setHosts($esConfig['hosts'])->build();
+        $this->client = ClientBuilder::create()
+            ->setHosts($esConfig['hosts'])
+            ->setRetries(3)
+            ->build();
     }
 
     public function indexExists(string $indexName): bool
@@ -44,7 +47,7 @@ class ElasticsearchService
         ]);
     }
 
-    public function bulkIndex(string $indexName, array $documents): void
+    public function bulkIndex(string $indexName, array $documents): array
     {
         $params = ['body' => []];
 
@@ -58,31 +61,45 @@ class ElasticsearchService
             $params['body'][] = $doc;
         }
 
+        $response = ['errors' => false];
         if (!empty($params['body'])) {
-            $this->client->bulk($params);
+            $response = $this->client->bulk($params)->asArray();
         }
+        return $response;
+    }
+
+    public function refreshIndex(string $indexName): void
+    {
+        $this->client->indices()->refresh(['index' => $indexName]);
     }
 
     public function search(string $indexName, array $filters = [], int $size = 50)
     {
-        $query = [];
+        $must_query = [];
+        $filter_query = [];
 
-        if (!empty($filters['type'])) {
-            $query[] = ['term' => ['type' => $filters['type']]];
-        }
-        if (!empty($filters['year'])) {
-            $query[] = ['term' => ['year' => $filters['year']]];
-        }
-        if (!empty($filters['program'])) { 
-            $query[] = ['match' => ['researcher_name' => $filters['program']]];
-        }
+        // A busca por texto vai na cláusula principal
         if (!empty($filters['q'])) {
-            $query[] = [
+            $must_query[] = [
                 'multi_match' => [
                     'query' => $filters['q'],
                     'fields' => ['title', 'researcher_name']
                 ]
             ];
+        } else {
+            // Se não houver busca por texto, retorna tudo (respeitando os filtros)
+            $must_query[] = ['match_all' => new \stdClass()];
+        }
+
+        // As seleções dos dropdowns vão na cláusula de filtro
+        if (!empty($filters['type'])) {
+            $filter_query[] = ['term' => ['type' => $filters['type']]];
+        }
+        if (!empty($filters['year'])) {
+            $filter_query[] = ['term' => ['year' => $filters['year']]];
+        }
+        if (!empty($filters['program'])) {
+            $filter_query[] = ['match' => ['researcher_name' => $filters['program']]];
         }
 
         $params = [
@@ -95,7 +112,8 @@ class ElasticsearchService
                 ],
                 'query' => [
                     'bool' => [
-                        'must' => empty($query) ? ['match_all' => new \stdClass()] : $query
+                        'must' => $must_query,
+                        'filter' => $filter_query
                     ]
                 ]
             ]

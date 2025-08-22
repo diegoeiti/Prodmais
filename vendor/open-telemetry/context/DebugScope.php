@@ -24,12 +24,15 @@ final class DebugScope implements ScopeInterface
 {
     private static bool $shutdownHandlerInitialized = false;
     private static bool $finalShutdownPhase = false;
-    private readonly ?int $fiberId;
-    private readonly array $createdAt;
+
+    private ContextStorageScopeInterface $scope;
+    private ?int $fiberId;
+    private array $createdAt;
     private ?array $detachedAt = null;
 
-    public function __construct(private readonly ContextStorageScopeInterface $scope)
+    public function __construct(ContextStorageScopeInterface $scope)
     {
+        $this->scope = $scope;
         $this->fiberId = self::currentFiberId();
         $this->createdAt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
@@ -39,7 +42,6 @@ final class DebugScope implements ScopeInterface
         }
     }
 
-    #[\Override]
     public function detach(): int
     {
         $this->detachedAt ??= debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -78,7 +80,7 @@ final class DebugScope implements ScopeInterface
 
             trigger_error(sprintf(
                 'Scope: missing call to Scope::detach() for scope #%d, created %s',
-                spl_object_id($this),
+                spl_object_id($this->scope),
                 self::formatBacktrace($this->createdAt),
             ));
         }
@@ -115,7 +117,7 @@ final class DebugScope implements ScopeInterface
             $s .= strtr($trace[$i]['function'] ?? '{main}', ['\\' => '.']);
             $s .= '(';
             if (isset($trace[$i - 1]['file'])) {
-                $s .= basename((string) $trace[$i - 1]['file']);
+                $s .= basename($trace[$i - 1]['file']);
                 if (isset($trace[$i - 1]['line'])) {
                     $s .= ':';
                     $s .= $trace[$i - 1]['line'];

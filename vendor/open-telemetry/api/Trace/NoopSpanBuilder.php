@@ -10,13 +10,17 @@ use OpenTelemetry\Context\ContextStorageInterface;
 
 final class NoopSpanBuilder implements SpanBuilderInterface
 {
-    private ContextInterface|false|null $parentContext = null;
+    private ContextStorageInterface $contextStorage;
 
-    public function __construct(private readonly ContextStorageInterface $contextStorage)
+    /** @var ContextInterface|false|null */
+    private $parentContext = null;
+
+    public function __construct(ContextStorageInterface $contextStorage)
     {
+        $this->contextStorage = $contextStorage;
     }
 
-    public function setParent(ContextInterface|false|null $context): SpanBuilderInterface
+    public function setParent($context): SpanBuilderInterface
     {
         $this->parentContext = $context;
 
@@ -28,7 +32,7 @@ final class NoopSpanBuilder implements SpanBuilderInterface
         return $this;
     }
 
-    public function setAttribute(string $key, mixed $value): SpanBuilderInterface
+    public function setAttribute(string $key, $value): SpanBuilderInterface
     {
         return $this;
     }
