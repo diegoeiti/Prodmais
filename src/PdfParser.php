@@ -13,22 +13,18 @@ class PdfParser
             $pdf = $parser->parseFile($filePath);
             $text = $pdf->getText();
             
-            // For simplicity, we'll treat the entire PDF content as a single document.
-            // We'll put all the extracted text into the 'title' for full-text search
-            // and add a placeholder for the year. A more advanced implementation
-            // could try to extract these fields from the text.
+            // DEBUG: Retornando dados simples para teste
             return [
                 [
-                    'id'    => uniqid('pdf_'), // Gera um ID único para o documento
-                    'title' => $text,
-                    'researcher_name' => 'Extraído de PDF', // Placeholder author
-                    'year' => date('Y'), // Placeholder year
-                    'type' => 'Documento PDF', // Placeholder type
-                    'doi' => '' // PDFs might not have a DOI
+                    'id'    => uniqid('pdf_debug_'),
+                    'title' => 'TEXTO BRUTO DO PDF: ' . $text, // Adiciona um prefixo para ser óbvio
+                    'researcher_name' => 'DEBUG TESTE PDF', // Nome do pesquisador para teste
+                    'year' => 2025,
+                    'type' => 'PDF Teste',
+                    'doi' => ''
                 ]
             ];
         } catch (\Exception $e) {
-            // Log error or handle it as needed
             error_log("Could not parse PDF: " . $e->getMessage());
             return [];
         }
