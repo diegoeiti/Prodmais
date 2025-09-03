@@ -3,6 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <div class="row">
@@ -54,17 +56,17 @@
             statusDiv.innerHTML = `<div class="alert alert-info">Enviando arquivos e iniciando a indexação... Isso pode levar alguns minutos. Por favor, aguarde.</div>`;
 
             fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Erro do servidor: ${response.status} ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                let reportHtml = `
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro do servidor: ${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let reportHtml = `
                     <div class="alert alert-success">
                         <strong>Processo Concluído!</strong><br>
                         <ul class="mb-0">
@@ -74,30 +76,31 @@
                     </div>
                 `;
 
-                if (data.files && data.files.length > 0) {
-                    reportHtml += `<h5>Detalhes por Arquivo:</h5><ul class="list-group">`;
-                    data.files.forEach(file => {
-                        if (file.status === 'success') {
-                            const productionsText = file.indexed === 1 ? 'produção indexada' : 'produções indexadas';
-                            reportHtml += `<li class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                    if (data.files && data.files.length > 0) {
+                        reportHtml += `<h5>Detalhes por Arquivo:</h5><ul class="list-group">`;
+                        data.files.forEach(file => {
+                            if (file.status === 'success') {
+                                const productionsText = file.indexed === 1 ? 'produção indexada' : 'produções indexadas';
+                                reportHtml += `<li class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
                                 ${file.name}
                                 <span class="badge bg-primary rounded-pill">${file.indexed} ${productionsText}</span>
                             </li>`;
-                        } else {
-                            reportHtml += `<li class="list-group-item list-group-item-danger">
+                            } else {
+                                reportHtml += `<li class="list-group-item list-group-item-danger">
                                 <strong>${file.name}</strong> - Erro: ${file.message}
                             </li>`;
-                        }
-                    });
-                    reportHtml += `</ul>`;
-                }
+                            }
+                        });
+                        reportHtml += `</ul>`;
+                    }
 
-                statusDiv.innerHTML = reportHtml;
-            })
-            .catch(error => {
-                statusDiv.innerHTML = `<div class="alert alert-danger"><strong>Ocorreu um erro:</strong> ${error.message}</div>`;
-            });
+                    statusDiv.innerHTML = reportHtml;
+                })
+                .catch(error => {
+                    statusDiv.innerHTML = `<div class="alert alert-danger"><strong>Ocorreu um erro:</strong> ${error.message}</div>`;
+                });
         });
     </script>
 </body>
+
 </html>
