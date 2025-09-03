@@ -1,4 +1,19 @@
+
 # Prodmais - Análise de Produção Científica
+
+## Exemplos de telas
+
+### Tela de Login
+![Login](img/login.png)
+*Acesso institucional restrito, layout moderno e seguro, integração com LDAP ou administradores locais.*
+
+### Área Administrativa
+![Área Administrativa](img/area-administrativa.png)
+*Upload de arquivos Lattes (XML/PDF), expurgo de logs, visualização dos acessos e controle de indexação.*
+
+### Dashboard de Produção Científica
+![Dashboard de Produção](img/dashboard-producao.png)
+*Visualização agregada dos dados indexados, filtros avançados, gráficos e relatórios para análise institucional.*
 
 Esta aplicação foi desenvolvida para consolidar, analisar e fornecer uma interface de visualização para a produção científica de programas de pós-graduação, utilizando dados da Plataforma Lattes, ORCID e OpenAlex.
 
@@ -8,76 +23,88 @@ A arquitetura é dividida em duas partes principais:
 
 ---
 
-## Pré-requisitos
 
-- **PHP 8.2+** com as extensões `php-xml` e `php-curl`.
-- **Composer** (gerenciador de dependências para PHP). Se não estiver instalado globalmente, o projeto pode tentar usar uma cópia local (`composer.phar`).
-- **Elasticsearch 8.10+** em execução e acessível pela aplicação.
+## Requisitos para rodar o sistema
 
----
-
-## Instalação e Configuração
-
-**1. Clone ou baixe o projeto:**
-
-```bash
-# git clone [URL_DO_REPOSITORIO]
-# cd Prodmais
-```
-
-**2. Instale as dependências PHP:**
-
-Execute o Composer na raiz do projeto. Isso irá baixar o cliente Elasticsearch e configurar o autoloader.
-
-```bash
-composer install
-```
-
-**3. Configure a Aplicação:**
-
-Copie ou renomeie o arquivo `config/config.php` e ajuste as configurações conforme necessário.
-
-- **`elasticsearch.hosts`**: Endereço do seu servidor Elasticsearch.
-- **`app.index_name`**: Nome que será usado para o índice no Elasticsearch.
-
-**4. Adicione os Dados do Lattes:**
-
-Coloque os arquivos XML dos currículos Lattes que você deseja processar dentro do diretório `data/lattes_xml/`.
+- **PHP 8.2+** com as extensões: `php-xml`, `php-curl`, `php-sqlite3` habilitadas
+- **Composer** (dependências PHP)
+- **Elasticsearch 8.10+ ou superior** (recomendado >= 9.1.2)
+- **Servidor web** (Apache, Nginx ou embutido do PHP)
+- **Permissões de escrita** para os diretórios `data/` e `data/logs.sqlite`
 
 ---
 
-## Execução
 
-**1. Execute o Script de Indexação:**
+## Instalação
 
-Este é o passo mais importante. Execute o script `indexer.php` a partir da linha de comando. Ele irá ler os arquivos XML, processá-los e enviar os dados para o Elasticsearch. Este processo pode levar algum tempo, dependendo do volume de dados.
+1. Clone ou baixe o projeto:
+    ```powershell
+    git clone [URL_DO_REPOSITORIO]
+    cd Prodmais
+    ```
 
-```bash
+2. Instale as dependências PHP:
+    ```powershell
+    composer install
+    ```
+
+3. Configure o Elasticsearch:
+    - Instale e inicie o Elasticsearch localmente (veja https://www.elastic.co/downloads/elasticsearch)
+    - Certifique-se de que está rodando em `localhost:9200` ou ajuste o host em `config/config.php`.
+    - Libere espaço em disco para evitar bloqueios de escrita.
+
+4. Configure a aplicação:
+    - Edite `config/config.php` para ajustar o host do Elasticsearch e o nome do índice.
+
+5. Adicione os arquivos Lattes (XML ou PDF) em `data/lattes_xml/`.
+
+---
+
+
+## Comandos para rodar o sistema
+
+**Servidor web embutido do PHP:**
+```powershell
+php -S localhost:8000 -t public
+```
+
+**Área administrativa:**
+Abra no navegador: [http://localhost:8000/admin.php](http://localhost:8000/admin.php)
+
+**Indexação dos currículos:**
+```powershell
 php bin/indexer.php
 ```
 
-Você deve executar este script periodicamente para manter os dados atualizados.
-
-**2. Configure o Servidor Web:**
-
-Configure seu servidor web (Apache, Nginx, etc.) para que a raiz do documento (`DocumentRoot`) aponte para o diretório `public/` do projeto.
-
-Exemplo de configuração para Apache (Virtual Host):
-
-```apache
-<VirtualHost *:80>
-    ServerName prodmais.local
-    DocumentRoot "/caminho/para/o/projeto/Prodmais/public"
-    <Directory "/caminho/para/o/projeto/Prodmais/public">
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>
+**Remover bloqueio de escrita do Elasticsearch (se necessário):**
+```powershell
+Invoke-WebRequest -Method PUT -Uri "http://localhost:9200/prodmais_cientifica/_settings" -ContentType "application/json" -Body '{"index.blocks.read_only_allow_delete": null}'
 ```
 
-**3. Acesse a Aplicação:**
+## Dicas de hospedagem
 
-Após configurar o servidor, acesse a URL configurada (ex: `http://prodmais.local`) no seu navegador para ver o dashboard.
+- O Elasticsearch exige recursos de memória e disco, não sendo suportado em hospedagens gratuitas tradicionais (Vercel, Netlify, Heroku Free, etc).
+- Para produção institucional, utilize VPS, cloud universitária ou servidor próprio.
+- Para testes, o servidor embutido do PHP e Elasticsearch local são suficientes.
+
+## Segurança
+
+- Nunca compartilhe senhas reais em texto plano.
+- Use login institucional (LDAP) ou cadastre administradores locais em `public/login.php`.
+- Recomenda-se uso de HTTPS/TLS em produção.
+
+## Resumo do fluxo
+
+1. Instale dependências e configure ambiente.
+2. Inicie o Elasticsearch e o servidor web.
+3. Faça login na área administrativa.
+4. Faça upload dos arquivos Lattes.
+5. Execute o script de indexação.
+6. Consulte e analise os dados via dashboard.
+
+---
+
+Para dúvidas ou problemas, consulte a documentação oficial do Elasticsearch ou entre em contato com o suporte institucional.
 
 ---
 

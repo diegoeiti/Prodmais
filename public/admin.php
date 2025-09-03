@@ -1,5 +1,17 @@
 <?php
-// Futuramente, adicionar um sistema de login/senha aqui
+session_start();
+require_once __DIR__.'/../vendor/autoload.php';
+use App\LogService;
+if (empty($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}
+$log = new LogService();
+$log->log($_SESSION['user'], 'Acesso à área administrativa');
+if (isset($_POST['expunge'])) {
+    $log->expungeOld(365);
+    $msg = 'Logs antigos expurgados.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -20,8 +32,8 @@
                     <h1 class="h3">Área Administrativa</h1>
                     <p class="text-muted">Atualização da Base de Dados Lattes</p>
                 </header>
-
-                <div class="card">
+                <?php if (!empty($msg)) echo "<div class='alert alert-success'>$msg</div>"; ?>
+                <div class="card mb-4">
                     <div class="card-body">
                         <form action="api/upload_and_index.php" method="post" enctype="multipart/form-data" id="upload-form">
                             <div class="mb-3">
@@ -35,9 +47,23 @@
                         </form>
                     </div>
                 </div>
-
                 <div id="upload-status" class="mt-4"></div>
-
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5>Logs de acesso (últimos 100 registros)</h5>
+                        <form method="post"><button name="expunge" value="1" class="btn btn-warning btn-sm mb-2">Expurgar logs antigos</button></form>
+                        <table class="table table-bordered table-sm">
+                            <thead><tr><th>Usuário</th><th>Ação</th><th>Data</th></tr></thead>
+                            <tbody>
+                            <?php
+                            foreach ($log->getLogs(100) as $row) {
+                                echo "<tr><td>{$row['user']}</td><td>{$row['action']}</td><td>{$row['timestamp']}</td></tr>";
+                            }
+                            ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="text-center mt-4">
                     <a href="index.php">Voltar para a busca</a>
                 </div>
