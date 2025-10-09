@@ -1,0 +1,34 @@
+# .dockerignore para otimizar build
+.git
+.gitignore
+README.md
+PIVIC*
+*.pdf
+.vscode
+.idea
+
+# Arquivos de desenvolvimento
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dados temporários
+data/cache/*
+data/logs/*
+data/uploads/*
+!data/cache/.gitkeep
+!data/logs/.gitkeep
+!data/uploads/.gitkeep
+
+# Dependências (serão instaladas no container)
+node_modules/
+
+# Backups
+data/backups/*
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db

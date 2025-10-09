@@ -1,0 +1,61 @@
+# Configuração Docker para Prodmais
+version: '3.8'
+
+services:
+  # Elasticsearch
+  elasticsearch:
+    image: elasticsearch:8.10.4
+    container_name: prodmais_elasticsearch
+    environment:
+      - node.name=prodmais-es
+      - cluster.name=prodmais-cluster
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - prodmais
+
+  # Kibana (opcional - para visualização)
+  kibana:
+    image: kibana:8.10.4
+    container_name: prodmais_kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - prodmais
+
+  # PHP/Apache
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prodmais_web
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./data:/var/www/html/data
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - prodmais
+
+volumes:
+  elasticsearch_data:
+    driver: local
+
+networks:
+  prodmais:
+    driver: bridge
