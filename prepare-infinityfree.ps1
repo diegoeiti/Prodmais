@@ -161,17 +161,17 @@ Write-Host "✅ Pacote criado: prodmais-infinityfree.zip" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "  ✅ PREPARAÇÃO CONCLUÍDA!              " -ForegroundColor Cyan
+Write-Host "  PREPARACAO CONCLUIDA!                  " -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "📦 Arquivo criado: prodmais-infinityfree.zip" -ForegroundColor White
+Write-Host "Pacote criado: prodmais-infinityfree.zip" -ForegroundColor White
 Write-Host ""
-Write-Host "Próximos passos:" -ForegroundColor Yellow
+Write-Host "Proximos passos:" -ForegroundColor Yellow
 Write-Host "1. Acesse https://www.infinityfree.net" -ForegroundColor White
 Write-Host "2. Crie sua conta de hospedagem" -ForegroundColor White
-Write-Host "3. Faça upload via FTP ou File Manager" -ForegroundColor White
+Write-Host "3. Faca upload via FTP ou File Manager" -ForegroundColor White
 Write-Host "4. Extraia o ZIP em htdocs/" -ForegroundColor White
-Write-Host "5. Configure permissões (755 para data/)" -ForegroundColor White
+Write-Host "5. Configure permissoes (755 para data/)" -ForegroundColor White
 Write-Host ""
-Write-Host "📖 Veja DEPLOY_INFINITYFREE.md para guia completo" -ForegroundColor Cyan
+Write-Host "Veja DEPLOY_INFINITYFREE.md para guia completo" -ForegroundColor Cyan
 Write-Host ""
