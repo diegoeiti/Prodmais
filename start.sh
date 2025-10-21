@@ -9,14 +9,8 @@ fi
 
 # Instalar dependências se não estiverem presentes
 if [ ! -d "vendor" ]; then
-    echo "Instalando dependências..."
-    php composer.phar install --no-dev --optimize-autoloader
-fi
-
-# Verificar se o arquivo composer.phar existe
-if [ ! -f "composer.phar" ]; then
-    echo "Baixando Composer..."
-    curl -sS https://getcomposer.org/installer | php
+    echo "Instalando dependências via Composer..."
+    composer install --no-dev --optimize-autoloader
 fi
 
 # Criar diretórios necessários
