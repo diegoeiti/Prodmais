@@ -61,11 +61,25 @@ O sistema **Prodmais** foi testado extensivamente com **Cypress** para garantir 
 
 ### 🎬 Vídeos de Demonstração
 
-Os testes geraram vídeos completos de uso do sistema:
-- `cypress/videos/01-dashboard.cy.js.mp4` - Navegação pelo dashboard
-- `cypress/videos/02-login-admin.cy.js.mp4` - Processo de login
-- `cypress/videos/04-exportacao.cy.js.mp4` - Exportação de dados
-- `cypress/videos/05-api.cy.js.mp4` - Testes de API
+Os testes geraram vídeos completos de uso do sistema (disponíveis no repositório):
+
+| Funcionalidade | Vídeo | Duração | Descrição |
+|----------------|-------|---------|-----------|
+| **Sistema de Login** | [02-login-admin.cy.js.mp4](docs/videos/02-login-admin.cy.js.mp4) | 19s | Demonstração completa do processo de autenticação |
+| **Busca de Pesquisadores** | [03-pesquisadores.cy.js.mp4](docs/videos/03-pesquisadores.cy.js.mp4) | 14s | Busca e filtros de perfis acadêmicos |
+| **Exportação de Dados** | [04-exportacao.cy.js.mp4](docs/videos/04-exportacao.cy.js.mp4) | 24s | Exportação em múltiplos formatos (BibTeX, RIS, CSV) |
+| **Testes de API** | [05-api.cy.js.mp4](docs/videos/05-api.cy.js.mp4) | 4s | Validação dos endpoints REST |
+
+**📂 Localização dos vídeos:** `docs/videos/` e `cypress/videos/`
+
+### 📸 Screenshots Capturados
+
+Todos os screenshots estão disponíveis em `cypress/screenshots/`:
+- ✅ Tela de login e autenticação
+- ✅ Área administrativa completa
+- ✅ Busca de pesquisadores
+- ✅ Opções de exportação de dados
+- ✅ Filtros avançados por tipo e ano
 
 ### 📊 Relatório de Testes
 
@@ -84,6 +98,12 @@ npm test
 # Gerar apenas screenshots
 npm run test:screenshots
 ```
+
+**📹 Como Visualizar os Vídeos:**
+1. Clone o repositório: `git clone https://github.com/Matheus904-12/Prodmais.git`
+2. Navegue até: `docs/videos/`
+3. Abra os arquivos `.mp4` em qualquer player de vídeo
+4. Ou baixe diretamente do GitHub clicando nos links acima
 
 ---
 

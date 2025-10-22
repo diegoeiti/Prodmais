@@ -58,11 +58,12 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 
-# Cypress test artifacts
-cypress/videos/
-cypress/screenshots/
+# Cypress test artifacts (manter alguns exemplos)
 cypress/downloads/
 cypress.env.json
+# Manter screenshots e vídeos de exemplo para documentação
+# cypress/videos/
+# cypress/screenshots/
 
 # Ambiente
 .env
