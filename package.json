@@ -1,0 +1,21 @@
+{
+  "name": "prodmais",
+  "version": "1.0.0",
+  "description": "[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=flat-square&logo=php&logoColor=white)](https://php.net) [![Elasticsearch](https://img.shields.io/badge/elasticsearch-%23005571.svg?style=flat-square&logo=elasticsearch&logoColor=white)](https://elastic.co)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "cypress run",
+    "test:open": "cypress open",
+    "test:headed": "cypress run --headed --browser chrome",
+    "test:screenshots": "cypress run --spec 'cypress/e2e/**/*.cy.js' --config video=false"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^15.5.0"
+  }
+}
