@@ -2,19 +2,32 @@
 FROM php:8.2-apache
 
 # Instalar extensões PHP necessárias
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
-    unzip \
-    libxml2-dev \
-    libcurl4-openssl-dev \
-    libsqlite3-dev \
-    && docker-php-ext-install \
-    zip \
-    xml \
-    curl \
-    pdo_sqlite \
-    mbstring
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        git \
+        zip \
+        unzip \
+        libzip-dev \
+        libxml2-dev \
+        libcurl4-openssl-dev \
+        libsqlite3-dev \
+        libonig-dev \
+        pkg-config \
+        zlib1g-dev \
+        build-essential \
+        autoconf \
+        make \
+        gcc \
+    && docker-php-ext-configure zip --with-libzip \
+    && docker-php-ext-install -j"$(nproc)" \
+        zip \
+        xml \
+        curl \
+        pdo_sqlite \
+        mbstring \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Habilitar mod_rewrite do Apache
 RUN a2enmod rewrite
